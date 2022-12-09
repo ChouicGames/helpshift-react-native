@@ -13,6 +13,7 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
@@ -111,20 +112,20 @@ public class RNHelpshiftView extends ViewGroupManager<ReactViewGroup> {
         // fragmentManager.beginTransaction().replace(reactView.getId(), helpshiftFragment).commit();
     }
 
-    private Map<String, String[]> getCustomIssueFields(ReadableMap cifs) {
+    private HashMap<String, String> getCustomIssueFields(ReadableMap cifs) {
         ReadableMapKeySetIterator iterator = cifs.keySetIterator();
-        Map<String, String[]> customIssueFields = new HashMap<>();
+        HashMap<String, String> customIssueFields = new HashMap<>();
 
         while (iterator.hasNextKey()) {
             String key = iterator.nextKey();
-            ReadableArray array = cifs.getArray(key);
-            customIssueFields.put(key, new String[]{array.getString(0), array.getString(1)});
+            String key2 = cifs.getString(key);
+            customIssueFields.put(key, key2);
         }
 
         return customIssueFields;
     }
 
-    private void sendEvent(ReactContext reactContext, String eventName, Map<String, Object> params) {
+    private void sendEvent(ReactContext reactContext, String eventName, WritableMap params) {
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(eventName, params);
     }
@@ -132,13 +133,13 @@ public class RNHelpshiftView extends ViewGroupManager<ReactViewGroup> {
      
     public void sessionBegan() {
         Log.d("Helpshift", "sessionBegan");
-        sendEvent(mReactContext, "Helpshift/SessionBegan", new HashMap<>());
+        sendEvent(mReactContext, "Helpshift/SessionBegan", new WritableNativeMap());
     }
 
      
     public void sessionEnded() {
         Log.d("Helpshift", "sessionEnded");
-        sendEvent(mReactContext, "Helpshift/SessionEnded", new HashMap<>());
+        sendEvent(mReactContext, "Helpshift/SessionEnded", new WritableNativeMap());
     }
 
     //  
@@ -152,7 +153,7 @@ public class RNHelpshiftView extends ViewGroupManager<ReactViewGroup> {
      
     public void conversationEnded() {
         Log.d("Helpshift", "conversationEnded");
-        sendEvent(mReactContext, "Helpshift/ConversationEnded", new HashMap<>());
+        sendEvent(mReactContext, "Helpshift/ConversationEnded", new WritableNativeMap());
     }
 
     //  
